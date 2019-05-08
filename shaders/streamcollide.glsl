@@ -10,7 +10,6 @@ uniform sampler2D velocity_current_density;
 uniform sampler2D f_zero_prev_density;
 uniform vec2 offset;
 uniform sampler2D height_boundary;
-uniform sampler2D pigment;
 
 void main(){
   vec2 st = gl_TexCoord[0].st;
@@ -113,17 +112,11 @@ void main(){
   new_f7 = (1.-viscosity)*new_f7 + viscosity*f7_eq;
   new_f8 = (1.-viscosity)*new_f8 + viscosity*f8_eq;
 
-//pigment update part1 : update P_f/P_s of all cells first
 
-  vec3 pigment_concentration = texture2D(pigment, st).xyz;
-  float new_P_f = (pigment_concentration.y * new_density + pigment_concentration.x * new_wf) / (new_density + new_wf);
-  float delta_P_f = new_P_f - pigment_concentration.y;
-  float new_P_s = max(pigment_concentration.x - delta_P_f, 0.);
 
   gl_FragData[0] = vec4(new_f1, new_f2, new_f3, new_f4);
   gl_FragData[1] = vec4(new_f5, new_f6, new_f7, new_f8);
   gl_FragData[2] = vec4(u.x, u.y, new_density, new_wf);
   gl_FragData[3] = vec4(new_f0, texture2D(f_zero_prev_density, st).g, texture2D(f_zero_prev_density, st).b, ws);
-  gl_FragData[4] = vec4(new_P_s, new_P_f, pigment_concentration.z, 0.0);
 
 }

@@ -44,10 +44,12 @@ void main() {
     gl_FragData[1] = vec4(f_five_to_eight[0] + fiveInc, f_five_to_eight[1] + sixInc,
       f_five_to_eight[2] + sevenInc, f_five_to_eight[3] + eightInc);
     gl_FragData[2] = vec4(f_zero_[0] + restInc, f_zero_.yzw);
+    gl_FragData[3] = vec4(pigmentData.x + restInc * pigment_to_water_ratio, pigmentData.yzw);
+
   } else{
     gl_FragData[0] = f_one_to_four;
     gl_FragData[1] = f_five_to_eight;
     gl_FragData[2] = f_zero_;
-    gl_FragData[3] = vec4(pigmentData.x + restInc * pigment_to_water_ratio, pigmentData);
+    gl_FragData[3] = pigmentData;
   }
 }

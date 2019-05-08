@@ -22,6 +22,6 @@ vec3 T1 = b / c;
 vec3 R2 = texture2D(sum_reflectance, st).xyz;
 vec3 R = R1 + pow(T1, 2) * R2 / (vec3(1.) - R1 * R2);
 
-gl_FragData[0] = vec4(R, 0.);
+gl_FragData[0] = vec4(R, 1.);
 
 }

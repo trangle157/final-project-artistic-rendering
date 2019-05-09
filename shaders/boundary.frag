@@ -25,17 +25,17 @@ void main(){
 	float ws = tex2.a;
   float wf = texture2D(velocity_current_density, st).a;
   if(current_density == 0.0){
-    density_1 = texture2D(velocity_current_density, st + vec2(+dx, 0.0)).b;
-    density_2 = texture2D(velocity_current_density, st + vec2(-dx, 0.0)).b;
-    density_3 = texture2D(velocity_current_density, st + vec2(0.0, +dy)).b;
-    density_4 = texture2D(velocity_current_density, st + vec2(0.0, -dy)).b;
-    density_5 = texture2D(velocity_current_density, st + vec2(+dx, +dy)).b;
-    density_6 = texture2D(velocity_current_density, st + vec2(+dx, -dy)).b;
-    density_7 = texture2D(velocity_current_density, st + vec2(-dx, +dy)).b;
-    density_8 = texture2D(velocity_current_density, st + vec2(-dx, -dy)).b;
+    float density_1 = texture2D(velocity_current_density, st + vec2(+dx, 0.0)).b;
+    float density_2 = texture2D(velocity_current_density, st + vec2(-dx, 0.0)).b;
+    float density_3 = texture2D(velocity_current_density, st + vec2(0.0, +dy)).b;
+    float density_4 = texture2D(velocity_current_density, st + vec2(0.0, -dy)).b;
+    float density_5 = texture2D(velocity_current_density, st + vec2(+dx, +dy)).b;
+    float density_6 = texture2D(velocity_current_density, st + vec2(+dx, -dy)).b;
+    float density_7 = texture2D(velocity_current_density, st + vec2(-dx, +dy)).b;
+    float density_8 = texture2D(velocity_current_density, st + vec2(-dx, -dy)).b;
     if(density_1 < threshold && density_2 < threshold && density_3 < threshold && density_4 < threshold &&
       density_5 < threshold && density_6 < threshold && density_7 < threshold && density_8 < threshold ){
-        new_blocking_factor = infinity;
+        new_blocking_factor = 1./0.;
         isBoundary = 1.0;
       }
   }

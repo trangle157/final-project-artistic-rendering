@@ -29,30 +29,30 @@ void main(){
     float f7 = f5_f8.b;
     float f8 = f5_f8.a;
 
-    vec2 e0 = (0.0, 0.0);
-    vec2 e1 = (1.0, 0.0);
-    vec2 e2 = (0.0, 1.0);
-    vec2 e3 = (-1.0, 0.0);
-    vec2 e4 = (0.0, -1.0);
+    vec2 e0 = vec2(0.0, 0.0);
+    vec2 e1 = vec2(1.0, 0.0);
+    vec2 e2 = vec2(0.0, 1.0);
+    vec2 e3 = vec2(-1.0, 0.0);
+    vec2 e4 = vec2(0.0, -1.0);
     vec2 e5 = e1 + e2;
     vec2 e6 = e2 + e3;
     vec2 e7 = e3 + e4;
     vec2 e8 = e4 + e1;
 
     float new_P_f = pigment_concentration.y;
-    flaot new_P_x = pigment_concentration.z;
+    float new_P_x = pigment_concentration.z;
 
     if (pigment_concentration.x > 0. || pigment_concentration.y > 0){
-        new_P_f = texture2D(pigment, st - offset * vec2(velocity_density.x, velocity_density.y));
+        new_P_f = texture2D(pigment, st - offset * vec2(velocity_density.x, velocity_density.y)).y;
     } else {
-      vec3 pigment_1 = texture2D(pigment, st - offset * e1);
-      vec3 pigment_2 = texture2D(pigment, st - offset * e2);
-      vec3 pigment_3 = texture2D(pigment, st - offset * e3);
-      vec3 pigment_4 = texture2D(pigment, st - offset * e4);
-      vec3 pigment_5 = texture2D(pigment, st - offset * e5);
-      vec3 pigment_6 = texture2D(pigment, st - offset * e6);
-      vec3 pigment_7 = texture2D(pigment, st - offset * e7);
-      vec3 pigment_8 = texture2D(pigment, st - offset * e8);
+      vec3 pigment_1 = texture2D(pigment, st - offset * e1).xyz;
+      vec3 pigment_2 = texture2D(pigment, st - offset * e2).xyz;
+      vec3 pigment_3 = texture2D(pigment, st - offset * e3).xyz;
+      vec3 pigment_4 = texture2D(pigment, st - offset * e4).xyz;
+      vec3 pigment_5 = texture2D(pigment, st - offset * e5).xyz;
+      vec3 pigment_6 = texture2D(pigment, st - offset * e6).xyz;
+      vec3 pigment_7 = texture2D(pigment, st - offset * e7).xyz;
+      vec3 pigment_8 = texture2D(pigment, st - offset * e8).xyz;
 
       if (pigment_1.x > 0. || pigment_1.y > 0. || pigment_2.x > 0. || pigment_2.y > 0. || pigment_3.x > 0. || pigment_3.y > 0. ||
         pigment_4.x > 0. || pigment_4.y > 0. || pigment_5.x > 0. || pigment_5.y > 0. || pigment_6.x > 0. || pigment_6.y > 0. ||

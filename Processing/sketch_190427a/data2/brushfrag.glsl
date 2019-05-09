@@ -19,7 +19,7 @@ void main() {
   float scale_direction = 0.005; //set to something
   float pigment_to_water_ratio = 0.3;
   vec2 x_y = vec2(gl_TexCoord[0].s * 1080., gl_TexCoord[0].t * 900.);
-  if (distance(vec2(x_y.x+0.5, x_y.y+0.5), brushPosition + vec2(.5)) >= brushSize / 2.0){
+  if (distance(vec2(x_y.x+0.5, x_y.y+0.5), brushPosition) >= brushSize / 2.0){
     toBrush = 1.0;
   }else{
     toBrush = 0.0;
@@ -29,8 +29,8 @@ void main() {
   vec4 f_five_to_eight = texture2D(f_five_eight, st);
   vec4 f_zero_ = texture2D(f_zero_prev_density, st);
   vec4 pigmentData = texture2D(pigment, st);
-  if(toBrush < 1.0){
-    float restInc = scale_rest;
+  if(toBrush == 0.0){
+    float restInc = scale_rest / length(brushVector);
     float oneInc = scale_direction * brushVector.x;
     float twoInc = scale_direction * brushVector.y;
     float threeInc = -oneInc;
@@ -43,8 +43,8 @@ void main() {
     gl_FragData[0] = vec4(f_one_to_four[0] + oneInc, f_one_to_four[1] + twoInc, f_one_to_four[2] + threeInc, f_one_to_four[3] + fourInc);
     gl_FragData[1] = vec4(f_five_to_eight[0] + fiveInc, f_five_to_eight[1] + sixInc,
       f_five_to_eight[2] + sevenInc, f_five_to_eight[3] + eightInc);
-    gl_FragData[2] = vec4(f_zero_.x + restInc, f_zero_.yz, f_zero_.w + restInc* (1. - pigment_to_water_ratio));
-    gl_FragData[3] = vec4(pigmentData.x + restInc* pigment_to_water_ratio, pigmentData.yzw);
+    gl_FragData[2] = vec4(f_zero_[0] + restInc, f_zero_.yzw);
+    gl_FragData[3] = vec4(pigmentData.x + restInc * pigment_to_water_ratio, pigmentData.yzw);
 
   } else{
     gl_FragData[0] = f_one_to_four;

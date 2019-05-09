@@ -11,10 +11,6 @@ uniform vec2 offset;
 uniform sampler2D pigment;
 uniform sampler2D height_boundary;
 
-float smoothstep(float edge0, float edge1, float x) {
-  x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0); 
-  return x * x * (3 - 2 * x);
-}
 
 void main(){
     vec2 st = gl_TexCoord[0].st;
@@ -45,14 +41,10 @@ void main(){
 
     float new_P_f = pigment_concentration.y;
     float new_P_x = pigment_concentration.z;
-    float current_density = velocity_density.z;
 
-    if (current_density > 0.){
+    if (pigment_concentration.x > 0. || pigment_concentration.y > 0.){
         new_P_f = texture2D(pigment, st - offset * vec2(velocity_density.x, velocity_density.y)).y;
     } else {
-      if ( texture2D(velocity_current_density, st - offset * e1).z > 0. || texture2D(velocity_current_density, st - offset * e2).z > 0. || 
-texture2D(velocity_current_density, st - offset * e3).z > 0. || texture2D(velocity_current_density, st - offset * e4).z > 0. || texture2D(velocity_current_density, st - offset * e5).z > 0. ||
-texture2D(velocity_current_density, st - offset * e6).z > 0. || texture2D(velocity_current_density, st - offset * e7).z > 0. || texture2D(velocity_current_density, st - offset * e8).z > 0.) {
       vec3 pigment_1 = texture2D(pigment, st - offset * e1).xyz;
       vec3 pigment_2 = texture2D(pigment, st - offset * e2).xyz;
       vec3 pigment_3 = texture2D(pigment, st - offset * e3).xyz;
@@ -61,12 +53,16 @@ texture2D(velocity_current_density, st - offset * e6).z > 0. || texture2D(veloci
       vec3 pigment_6 = texture2D(pigment, st - offset * e6).xyz;
       vec3 pigment_7 = texture2D(pigment, st - offset * e7).xyz;
       vec3 pigment_8 = texture2D(pigment, st - offset * e8).xyz;
+
+      if (pigment_1.x > 0. || pigment_1.y > 0. || pigment_2.x > 0. || pigment_2.y > 0. || pigment_3.x > 0. || pigment_3.y > 0. ||
+        pigment_4.x > 0. || pigment_4.y > 0. || pigment_5.x > 0. || pigment_5.y > 0. || pigment_6.x > 0. || pigment_6.y > 0. ||
+        pigment_7.x > 0. || pigment_7.y > 0. || pigment_8.x > 0. || pigment_8.y > 0.) {
         new_P_f = (f1 * pigment_1.y + f2 * pigment_2.y + f3 * pigment_3.y + f4 * pigment_4.y + f5 * pigment_5.y +
             f6 * pigment_6.y + f7 * pigment_7.y + f8 * pigment_8.y) / velocity_density.z;
         }
     }
 
-    float wl = max(f0_prev_density.z - velocity_density.z, 0.);
+    float wl = f0_prev_density.z - velocity_density.z;
     float water_lost = wl / f0_prev_density.z;
     float zeta = 0.1;
     float phi = 0.1;
@@ -77,14 +73,14 @@ texture2D(velocity_current_density, st - offset * e6).z > 0. || texture2D(veloci
     float theta = 0.1;
     float granularity = ki * (1. - smoothstep(0., mu, texture2D(height_boundary, st).x));
     if ( length(vec2(velocity_density.x, velocity_density.y)) > tau){
-      P_fix = 0.0001 * max(P_fix - theta * velocity_density.z * pigment_concentration.z, 0.);
+      P_fix = P_fix - theta * velocity_density.z * pigment_concentration.z;
       new_P_f = new_P_f + P_fix;
-      new_P_x = max(new_P_x - P_fix, 0.);
+      new_P_x = new_P_x - P_fix;
     }else{
-      new_P_f = max(new_P_f - P_fix, 0.);
+      new_P_f = new_P_f - P_fix;
       new_P_x = new_P_x + P_fix;
     }
-    
-    gl_FragData[0] = vec4(pigment_concentration.x,  new_P_f, new_P_x, 0.0);
-  
+
+    gl_FragData[0] = vec4(f0_prev_density.x, f0_prev_density.y, velocity_density.z, f0_prev_density.w);
+    gl_FragData[1] = vec4(pigment_concentration.x, new_P_f, new_P_x, 0.0);
 }

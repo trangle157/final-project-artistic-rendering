@@ -1,0 +1,8 @@
+<filter name="Initalize height">
+    <description>Creates height texture from paper texture</description>
+	<vertex>defaultvert.glsl</vertex>
+    <fragment>init_height.glsl</fragment>
+    <textures input="1" output="1">
+        <intexture type="sampler2d" name="height_boundary" offset="offset" label="height_boundary">0</intexture>
+    </textures>
+</filter>

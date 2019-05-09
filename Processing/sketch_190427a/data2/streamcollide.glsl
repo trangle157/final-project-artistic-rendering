@@ -120,7 +120,3 @@ void main(){
   gl_FragData[3] = vec4(new_f0, texture2D(f_zero_prev_density, st).g, texture2D(f_zero_prev_density, st).b, ws);
 
 }
-float smoothstep(float edge0, float edge1, float x) {
-  x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0); 
-  return x * x * (3 - 2 * x);
-}

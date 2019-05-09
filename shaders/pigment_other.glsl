@@ -42,7 +42,7 @@ void main(){
     float new_P_f = pigment_concentration.y;
     float new_P_x = pigment_concentration.z;
 
-    if (pigment_concentration.x > 0. || pigment_concentration.y > 0){
+    if (pigment_concentration.x > 0. || pigment_concentration.y > 0.){
         new_P_f = texture2D(pigment, st - offset * vec2(velocity_density.x, velocity_density.y)).y;
     } else {
       vec3 pigment_1 = texture2D(pigment, st - offset * e1).xyz;

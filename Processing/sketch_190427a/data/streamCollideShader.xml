@@ -1,0 +1,13 @@
+<filter name="Stream-Collide">
+    <description>Updates fluid with collision and streaming</description>
+	<vertex>defaultvert.glsl</vertex>
+    <fragment>streamcollide.glsl</fragment>
+    <textures input="5" output="4">
+        <intexture type="sampler2d" name="f_one_four" offset="offset" label="DF1to4">0</intexture>
+        <intexture type="sampler2d" name="f_five_eight" offset="offset" label="DF5to8">1</intexture>
+        <intexture type="sampler2d" name="velocity_current_density" offset="offset" label="velocitypwf">2</intexture>
+        <intexture type="sampler2d" name="f_zero_prev_density" offset="offset" label="DFblockpws">3</intexture>
+		<intexture type="sampler2d" name="height_boundary" offset="offset" label="height">4</intexture>		
+    </textures>
+	<!-- <parameter type="vec2" name="edges" label="Edges for particles motion">100 100</parameter> -->
+</filter>

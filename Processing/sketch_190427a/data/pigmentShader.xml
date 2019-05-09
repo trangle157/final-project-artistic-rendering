@@ -1,0 +1,10 @@
+<filter name="Pigment update">
+    <description>Updates pigment based on fluid flow</description>
+	<vertex>defaultvert.glsl</vertex>
+    <fragment>pigmentShader.glsl</fragment>
+    <textures input="2" output="1">
+        <intexture type="sampler2d" name="tex0" offset="offset" label="First input image">0</intexture>
+        <intexture type="sampler2d" name="tex1" offset="offset" label="Second input image">1</intexture> 
+    </textures>
+	<!-- <parameter type="vec2" name="edges" label="Edges for particles motion">100 100</parameter> -->
+</filter>

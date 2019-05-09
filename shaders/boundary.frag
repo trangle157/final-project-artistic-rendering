@@ -1,3 +1,4 @@
+#version 400
 //texture in each cell
 uniform vec4 f1_to_f4; //check back if uniform or attribute
 uniform vec4 f5_to_f8; //dist. func f5 to f8

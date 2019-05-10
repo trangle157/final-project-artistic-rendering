@@ -37,9 +37,9 @@ GLTexture reflectanceB;
 GLTexturePingPong reflectancePP;
 GLTexture dryLayer;
 GLTexture[] streamCollideShaderReadTexs = new GLTexture[5];
-GLTexture[] collisionReadTexs = new GLTexture[5];
 GLTexture[] streamCollideShaderWriteTexs = new GLTexture[4];
-GLTexture[] collisionWriteTexs = new GLTexture[4];
+GLTexture[] collisionShaderReadTexs = new GLTexture[5];
+GLTexture[] collisionShaderWriteTexs = new GLTexture[4];
 GLTexture[] boundaryShaderReadTexs = new GLTexture[5];
 GLTexture[] boundaryShaderWriteTexs = new GLTexture[2];
 GLTexture[] brushShaderReadTexs = new GLTexture[4];
@@ -161,10 +161,10 @@ void draw() {
   velocitypwfPP.swap();
   DFblockpwsPP.swap();
 
-  collisionReadTexs[0] = DF1to4PP.getReadTex();
-  collisionReadTexs[1] = DF5to8PP.getReadTex();
-  collisionReadTexs[2] = velocitypwfPP.getReadTex();
-  collisionReadTexs[3] = DFblockpwsPP.getReadTex();
+  collisionShaderReadTexs[0] = DF1to4PP.getReadTex();
+  collisionShaderReadTexs[1] = DF5to8PP.getReadTex();
+  collisionShaderReadTexs[2] = velocitypwfPP.getReadTex();
+  collisionShaderReadTexs[3] = DFblockpwsPP.getReadTex();
   collisionShaderReadTexs[4] = heightboundaryPP.getReadTex();
   collisionShaderWriteTexs[0] = DF1to4PP.getWriteTex();
   collisionShaderWriteTexs[1] = DF5to8PP.getWriteTex();

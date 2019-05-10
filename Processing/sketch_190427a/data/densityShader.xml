@@ -1,0 +1,10 @@
+<filter name="copyFS">
+    <description>Sets prev density to curr density</description>
+    <fragment>densityShader.glsl</fragment>
+	<textures input="2" output="1">
+		<intexture type="sampler2d" name="velocity_current_density" label="velocitypwf">0</intexture>
+		<intexture type="sampler2d" name="f_zero_prev_density" label="DFblockpws">1</intexture>
+	</textures>
+	
+</filter>
+

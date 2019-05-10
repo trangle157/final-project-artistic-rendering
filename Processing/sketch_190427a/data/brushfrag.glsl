@@ -14,22 +14,22 @@ uniform vec2 brushPosition;
 
 
 void main() {
-  float toBrush;
-  float scale_rest = 0.001; //set to something
-  float scale_direction = 0.005; //set to something
+  bool toBrush;
+  float scale_rest = 1.; //set to something
+  float scale_direction =5.; //set to something
   float pigment_to_water_ratio = 0.3;
   vec2 x_y = vec2(gl_TexCoord[0].s * 1080., gl_TexCoord[0].t * 900.);
-  if (distance(vec2(x_y.x+0.5, x_y.y+0.5), brushPosition + vec2(.5)) >= brushSize / 2.0){
-    toBrush = 1.0;
+  if (distance(vec2(x_y.x+0.5, x_y.y+0.5), brushPosition) >= brushSize / 2.0){
+    toBrush = false;
   }else{
-    toBrush = 0.0;
+    toBrush = true;
   }
   vec2 st = gl_TexCoord[0].st;
   vec4 f_one_to_four = texture2D(f_one_four, st);
   vec4 f_five_to_eight = texture2D(f_five_eight, st);
   vec4 f_zero_ = texture2D(f_zero_prev_density, st);
   vec4 pigmentData = texture2D(pigment, st);
-  if(toBrush < 1.0){
+  if(toBrush){
     float restInc = scale_rest;
     float oneInc = scale_direction * brushVector.x;
     float twoInc = scale_direction * brushVector.y;

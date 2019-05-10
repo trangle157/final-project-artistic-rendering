@@ -43,7 +43,6 @@ GLTexture[] boundaryShaderWriteTexs = new GLTexture[2];
 GLTexture[] brushShaderReadTexs = new GLTexture[4];
 GLTexture[] brushShaderWriteTexs = new GLTexture[4];
 GLTexture[] pigmentSecondShaderReadTexs = new GLTexture[6];
-GLTexture[] pigmentSecondShaderWriteTexs = new GLTexture[2];
 ArrayList<GLTexturePingPong> pigmentsPPs;
 ArrayList<Integer> pigmentsSet;
 GLTextureFilter streamCollideShader;
@@ -53,12 +52,15 @@ GLTextureFilter colorShader;
 GLTextureFilter pigmentFirstShader;
 GLTextureFilter pigmentSecondShader;
 GLTextureFilter initHeight;
+GLTextureFilter densityShader;
 boolean dryCanvas = false;
 GLTextureParameters texParams;
 GLTextureParameters colorParams;
+GLTextureFilter copyFilter;
 
 void setup() {
   size(1280, 900, GLConstants.GLGRAPHICS);
+  copyFilter = new GLTextureFilter(this, "copyFS.xml");
   //background(1);
   noStroke();
   pigmentsPPs = new ArrayList<GLTexturePingPong>();
@@ -70,6 +72,7 @@ void setup() {
   pigmentFirstShader = new GLTextureFilter(this, "pigmentFirstShader.xml");
   pigmentSecondShader = new GLTextureFilter(this, "pigmentSecondShader.xml");
   initHeight = new GLTextureFilter(this, "initheight.xml");
+  densityShader = new GLTextureFilter(this, "densityShader.xml");
   texParams = new GLTextureParameters();
   texParams.minFilter = GLTexture.NEAREST_SAMPLING;
   texParams.magFilter = GLTexture.NEAREST_SAMPLING;
@@ -90,7 +93,7 @@ void setup() {
   DF5to8PP = new GLTexturePingPong(DF5to8A, DF5to8B);
   velocitypwfA = new GLTexture(this, 1080, 900, texParams);
   velocitypwfB = new GLTexture(this, 1080, 900, texParams);
-  velocitypwfA.clear(0, 0, 1.0, 0);
+  velocitypwfA.clear(0., 0., 0., 0.);
   velocitypwfB.setZero();
   velocitypwfPP = new GLTexturePingPong(velocitypwfA, velocitypwfB);
   DFblockpwsA = new GLTexture(this, 1080, 900, texParams);
@@ -99,8 +102,8 @@ void setup() {
   DFblockpwsB.setZero();
   DFblockpwsPP = new GLTexturePingPong(DFblockpwsA, DFblockpwsB);
   canvas = new GLTexture(this, "paper.png");
-  heightboundaryA = new GLTexture(this, 1080, 900, colorParams);
-  heightboundaryB = new GLTexture(this, 1080, 900, colorParams);
+  heightboundaryA = new GLTexture(this, 1080, 900, texParams);
+  heightboundaryB = new GLTexture(this, 1080, 900, texParams);
   heightboundaryA.setZero();
   heightboundaryB.setZero();
   heightboundaryPP = new GLTexturePingPong(heightboundaryA, heightboundaryB);
@@ -110,9 +113,9 @@ void setup() {
   reflectancePP = new GLTexturePingPong(reflectanceA, reflectanceB);
   dryLayer = new GLTexture(this, "white.png", texParams);
   dryLayer.clear(255.0, 255.0, 255.0, 255.0);
-  dryLayer.loadPixels();
-  for (int i = 0; i < dryLayer.width * dryLayer.height; i++) dryLayer.pixels[i] = 0xffffffff;
-  dryLayer.loadTexture();
+  //dryLayer.loadPixels();
+  //for (int i = 0; i < dryLayer.width * dryLayer.height; i++) dryLayer.pixels[i] = 0xffffffff;
+  //dryLayer.loadTexture();
   makePalette();
   initHeight.apply(canvas, heightboundaryPP.getWriteTex());
   heightboundaryPP.swap();
@@ -155,10 +158,12 @@ void draw() {
   DFblockpwsPP.swap();
   
   
+  
   for (int i = 0; i < pigmentsPPs.size(); i++) {
-    pigmentFirstShader.apply(new GLTexture[] {pigmentsPPs.get(i).getReadTex(), DFblockpwsPP.getReadTex()}, new GLTexture[] {pigmentsPPs.get(i).getWriteTex()});
+    pigmentFirstShader.apply(new GLTexture[] {pigmentsPPs.get(i).getReadTex(), velocitypwfPP.getReadTex()}, new GLTexture[] {pigmentsPPs.get(i).getWriteTex()});
     pigmentsPPs.get(i).swap();
   }
+  
   
   for (int i = 0; i < pigmentsPPs.size(); i++) {
     pigmentSecondShaderReadTexs[0] = pigmentsPPs.get(i).getReadTex();
@@ -167,12 +172,13 @@ void draw() {
     pigmentSecondShaderReadTexs[3] = velocitypwfPP.getReadTex();
     pigmentSecondShaderReadTexs[4] = DFblockpwsPP.getReadTex();
     pigmentSecondShaderReadTexs[5] = heightboundaryPP.getReadTex();
-    pigmentSecondShaderWriteTexs[0] = pigmentsPPs.get(i).getWriteTex();
-    pigmentSecondShaderWriteTexs[1] = DFblockpwsPP.getWriteTex();
-    pigmentSecondShader.apply(pigmentSecondShaderReadTexs, pigmentSecondShaderWriteTexs);
+    pigmentSecondShader.apply(pigmentSecondShaderReadTexs, new GLTexture[] {pigmentsPPs.get(i).getWriteTex()});
     pigmentsPPs.get(i).swap();
-    DFblockpwsPP.swap();
   }
+  
+  
+  densityShader.apply(new GLTexture[] {velocitypwfPP.getReadTex(), DFblockpwsPP.getReadTex()}, new GLTexture[] {DFblockpwsPP.getWriteTex()});
+  DFblockpwsPP.swap();
   
   if (pigmentsPPs.size() > 0) {
     float[] pigmentinfo = colorinfo[pigmentsSet.get(0)];
@@ -188,18 +194,20 @@ void draw() {
       reflectancePP.swap();
     }
     if (dryCanvas) {
-      dryLayer.copy(reflectancePP.getReadTex());
+      reflectancePP.getReadTex().filter(copyFilter, dryLayer);
       pigmentsPPs.clear();
       pigmentsSet.clear(); 
       DF1to4PP.getReadTex().setZero();
       DF5to8PP.getReadTex().setZero();
-      velocitypwfPP.getReadTex().setZero();
+      velocitypwfPP.getReadTex().clear(0., 0., 0., 0.);
       DFblockpwsPP.getReadTex().setZero();
     }
     image(reflectancePP.getReadTex(), 0, 0, 1080, 900);
+    println("reflectance");
   }
   else {
     image(dryLayer, 0, 0, 1080, 900);
+    println("drylayer");
   }
   dryCanvas = false;
   //println(mouseX + "  " + mouseY);

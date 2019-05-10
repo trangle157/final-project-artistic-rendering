@@ -12,8 +12,13 @@ uniform sampler2D pigment;
 uniform sampler2D height_boundary;
 
 float smoothstep(float edge0, float edge1, float x) {
-  x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0); 
-  return x * x * (3 - 2 * x);
+  if(x < edge0){
+      return 0.;
+} else if( x > edge1){
+     return 1.;
+} else{
+  return edge0 * (2. * pow(x, 3.) - 3. * pow(x, 2.) + 1.) + edge1 * (-2 * pow(x, 3.) + 3. * pow(x, 2.));
+}
 }
 
 void main(){
@@ -33,26 +38,27 @@ void main(){
     float f7 = f5_f8.b;
     float f8 = f5_f8.a;
 
-    vec2 e0 = vec2(0.0, 0.0);
-    vec2 e1 = vec2(1.0, 0.0);
-    vec2 e2 = vec2(0.0, 1.0);
-    vec2 e3 = vec2(-1.0, 0.0);
-    vec2 e4 = vec2(0.0, -1.0);
-    vec2 e5 = e1 + e2;
-    vec2 e6 = e2 + e3;
-    vec2 e7 = e3 + e4;
-    vec2 e8 = e4 + e1;
+  vec2 e0 = vec2(0.0, 0.0);
+  vec2 e1 = vec2(1.0, 0.0);
+  vec2 e2 = vec2(0.0, -1.0);
+  vec2 e3 = vec2(-1.0, 0.0);
+  vec2 e4 = vec2(0.0, 1.0);
+  vec2 e5 = e1 + e2;
+  vec2 e6 = e2 + e3;
+  vec2 e7 = e3 + e4;
+  vec2 e8 = e4 + e1;
 
     float new_P_f = pigment_concentration.y;
     float new_P_x = pigment_concentration.z;
     float current_density = velocity_density.z;
+    float current_ws = f0_prev_density.w;
 
-    if (current_density > 0.){
-        new_P_f = texture2D(pigment, st - offset * vec2(velocity_density.x, velocity_density.y)).y;
+    if (current_ws > 0.){
+        new_P_f = texture2D(pigment, st - offset *vec2(velocity_density.x, velocity_density.y)).y;
     } else {
-      if ( texture2D(velocity_current_density, st - offset * e1).z > 0. || texture2D(velocity_current_density, st - offset * e2).z > 0. || 
-texture2D(velocity_current_density, st - offset * e3).z > 0. || texture2D(velocity_current_density, st - offset * e4).z > 0. || texture2D(velocity_current_density, st - offset * e5).z > 0. ||
-texture2D(velocity_current_density, st - offset * e6).z > 0. || texture2D(velocity_current_density, st - offset * e7).z > 0. || texture2D(velocity_current_density, st - offset * e8).z > 0.) {
+      if ( texture2D(f_zero_prev_density, st - offset * e1).w > 0. || texture2D(f_zero_prev_density, st - offset * e2).w > 0. || 
+texture2D(f_zero_prev_density, st - offset * e3).w > 0. || texture2D(f_zero_prev_density, st - offset * e4).w > 0. || texture2D(f_zero_prev_density, st - offset * e5).w > 0. ||
+texture2D(f_zero_prev_density, st - offset * e6).w > 0. || texture2D(f_zero_prev_density, st - offset * e7).w > 0. || texture2D(f_zero_prev_density, st - offset * e8).w > 0.) {
       vec3 pigment_1 = texture2D(pigment, st - offset * e1).xyz;
       vec3 pigment_2 = texture2D(pigment, st - offset * e2).xyz;
       vec3 pigment_3 = texture2D(pigment, st - offset * e3).xyz;
@@ -62,22 +68,27 @@ texture2D(velocity_current_density, st - offset * e6).z > 0. || texture2D(veloci
       vec3 pigment_7 = texture2D(pigment, st - offset * e7).xyz;
       vec3 pigment_8 = texture2D(pigment, st - offset * e8).xyz;
         new_P_f = (f1 * pigment_1.y + f2 * pigment_2.y + f3 * pigment_3.y + f4 * pigment_4.y + f5 * pigment_5.y +
-            f6 * pigment_6.y + f7 * pigment_7.y + f8 * pigment_8.y) / velocity_density.z;
+            f6 * pigment_6.y + f7 * pigment_7.y + f8 * pigment_8.y)/(current_density + 0.00005) ;
+
         }
     }
-
+    float water_lost = 0.;
+    if(f0_prev_density.z > 0.0){
     float wl = max(f0_prev_density.z - velocity_density.z, 0.);
-    float water_lost = wl / f0_prev_density.z;
+
+    water_lost = wl / f0_prev_density.z;
+   }
+
     float zeta = 0.1;
     float phi = 0.1;
-    float P_fix = max(water_lost * (1.0 - smoothstep(0., zeta, velocity_density.z)), phi);
+    float P_fix = 0.00001*max(water_lost * (1.0 - smoothstep(0., zeta, velocity_density.z)), phi);
     float ki = 0.3;
     float mu = 0.1;
     float tau = 1.5;
     float theta = 0.1;
     float granularity = ki * (1. - smoothstep(0., mu, texture2D(height_boundary, st).x));
     if ( length(vec2(velocity_density.x, velocity_density.y)) > tau){
-      P_fix = 0.0001 * max(P_fix - theta * velocity_density.z * pigment_concentration.z, 0.);
+      P_fix =  max(P_fix - theta * velocity_density.z * pigment_concentration.z, 0.);
       new_P_f = new_P_f + P_fix;
       new_P_x = max(new_P_x - P_fix, 0.);
     }else{

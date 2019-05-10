@@ -198,15 +198,16 @@ void main() {
   float lambda = 0.3;
   float alpha = smoothstep(0., lambda, new_density);
 
-  float f0_eq = (4./9.)*(new_density + alpha*(3.*dot(e0, u) + 9. * pow(dot(e0,u),2.)/2. - 3. * dot(u, u)/2.)); //wi = 4/9
-  float f1_eq = (1./9.)*(new_density + alpha*(3.*dot(e1, u) + 9. * pow(dot(e1,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f2_eq = (1./9.)*(new_density + alpha*(3.*dot(e2,u) + 9. * pow(dot(e2,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f3_eq = (1./9.)*(new_density + alpha*(3.*dot(e3,u) + 9. * pow(dot(e3,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f4_eq = (1./9.)*(new_density + alpha*(3.*dot(e4,u) + 9. * pow(dot(e4,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f5_eq = (1./36.)*(new_density + alpha*(3.*dot(e5,u) + 9. * pow(dot(e5,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f6_eq = (1./36.)*(new_density + alpha*(3.*dot(e6,u) + 9. * pow(dot(e6,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f7_eq = (1./36.)*(new_density + alpha*(3.*dot(e7,u) + 9. * pow(dot(e7,u),2.)/2. - 3. * dot(u, u)/2.));
-  float f8_eq = (1./36.)*(new_density + alpha*(3.*dot(e8,u) + 9. * pow(dot(e8,u),2.)/2. - 3. * dot(u, u)/2.));
+  //consider moving this step to a separate fragment shader
+  //float f0_eq = (4./9.)*(new_density + alpha*(3.*dot(e0, u) + 9. * pow(dot(e0,u),2.)/2. - 3. * dot(u, u)/2.)); //wi = 4/9
+  //float f1_eq = (1./9.)*(new_density + alpha*(3.*dot(e1, u) + 9. * pow(dot(e1,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f2_eq = (1./9.)*(new_density + alpha*(3.*dot(e2,u) + 9. * pow(dot(e2,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f3_eq = (1./9.)*(new_density + alpha*(3.*dot(e3,u) + 9. * pow(dot(e3,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f4_eq = (1./9.)*(new_density + alpha*(3.*dot(e4,u) + 9. * pow(dot(e4,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f5_eq = (1./36.)*(new_density + alpha*(3.*dot(e5,u) + 9. * pow(dot(e5,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f6_eq = (1./36.)*(new_density + alpha*(3.*dot(e6,u) + 9. * pow(dot(e6,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f7_eq = (1./36.)*(new_density + alpha*(3.*dot(e7,u) + 9. * pow(dot(e7,u),2.)/2. - 3. * dot(u, u)/2.));
+  //float f8_eq = (1./36.)*(new_density + alpha*(3.*dot(e8,u) + 9. * pow(dot(e8,u),2.)/2. - 3. * dot(u, u)/2.));
 
   //update new distribution function
   float viscosity = 1.2; //viscosity change with different pigment color, here we take rose as an example
@@ -219,8 +220,6 @@ void main() {
   new_f6 = (1.-viscosity)*new_f6 + viscosity*f6_eq;
   new_f7 = (1.-viscosity)*new_f7 + viscosity*f7_eq;
   new_f8 = (1.-viscosity)*new_f8 + viscosity*f8_eq;
-
-
 
   gl_FragData[0] = vec4(new_f1, new_f2, new_f3, new_f4);
   gl_FragData[1] = vec4(new_f5, new_f6, new_f7, new_f8);

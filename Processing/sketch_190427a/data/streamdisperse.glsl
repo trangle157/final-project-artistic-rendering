@@ -23,9 +23,10 @@ float smoothstep(float edge0, float edge1, float x) {
 
 //assume that streaming disperses from this cell
 void main() {
-	vec2 st = gl_TexCoord[0].st;
+	  vec2 st = gl_TexCoord[0].st;
   	vec4 tex1 = texture2D(f_one_four, st);
   	vec4 tex2 = texture2D(f_five_eight, st);
+    vec4 tex = texture2D(height_boundary, st);
   	float ws = texture2D(f_zero_prev_density, st).a;
   	float f0 = texture2D(f_zero_prev_density, st).r;
   	float f1 = tex1.r;
@@ -50,6 +51,50 @@ void main() {
   	float isBoundary = texture2D(height_boundary, st).g;
   	float evapRate = 0.1;
   	float k_a = 0.05;
+    float justStreamed = 1.0; //3rd element of height field set to 1
+    float new_f1 = 0.;
+    float new_f2= 0.;
+    float new_f3 = 0.;
+    float new_f4 = 0.;
+    float new_f5 = 0.;
+    float new_f6= 0.;
+    float new_f7= 0.;
+    float new_f8= 0.;
+
+
+  float gotStreamed = texture2D(height_boundary, st + offset*e1).b; //check if have streaming from left cell
+  if (gotStreamed) {
+    new_f1 += texture2D(f_one_four, st + offset*e1).r;
+  }
+  //so on
+  gotStreamed = texture2D(height_boundary, st + offset*e2).b; 
+  if (gotStreamed) {
+    new_f2 += texture2D(f_one_four, st + offset*e2).r;
+  }
+  gotStreamed = texture2D(height_boundary, st + offset*e3).b; 
+  if (gotStreamed) {
+    new_f3 += texture2D(f_one_four, st + offset*e3).r;
+  }
+  gotStreamed = texture2D(height_boundary, st + offset*e4).b; 
+  if (gotStreamed) {
+    new_f4 += texture2D(f_one_four, st + offset*e4).r;
+  }
+  gotStreamed = texture2D(height_boundary, st + offset*e5).b; 
+  if (gotStreamed) {
+    new_f5 += texture2D(f_five_eight, st + offset*e5).r;
+  }
+  gotStreamed = texture2D(height_boundary, st + offset*e6).b; 
+  if (gotStreamed) {
+    new_f6 += texture2D(f_five_eight, st + offset*e6).r;
+  }
+  gotStreamed = texture2D(height_boundary, st + offset*e7).b; 
+  if (gotStreamed) {
+    new_f7 += texture2D(f_five_eight, st + offset*e7).r;
+  }
+  gotStreamed = texture2D(height_boundary, st + offset*e8).b; 
+  if (gotStreamed) {
+    new_f8 += texture2D(f_five_eight, st + offset*e8).r;
+  }
 
     //check if neighboring cells are boundaries, if yes --> use bounce back
     //stream all fi with bounce-back and lower the density at boundaries
@@ -58,56 +103,85 @@ void main() {
     float ifbound = texture2D(height_boundary, st + offset * e1).g;//check if right is boundary
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f3 = max(k_a * f3 + (1.0 - k_a) * f1 - isBoundary*evapRate, 0.);
+      if (k_a == 1) {
+        new_f3 = max(k_a * f3 + (1.0 - k_a) * f1 - isBoundary*evapRate, 0.);
+      } else {
+        new_f3 = max(k_a * f3 + (1.0 - k_a) * f1, 0.);
+      }
     }
 
     k_opposite = texture2D(f_zero_prev_density, st + offset * e2).g;
     ifbound = texture2D(height_boundary, st + offset * e2).g; //up 
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f4 = max(k_a * f4 + (1.0 - k_a) * f2 - isBoundary*evapRate, 0.);
+      if(k_a == 1) {
+        new_f4 = max(k_a * f4 + (1.0 - k_a) * f2 - isBoundary*evapRate, 0.);
+      } else {
+        new_f4 = max(k_a * f4 + (1.0 - k_a) * f2, 0.);
+      }
     }
 
     k_opposite = texture2D(f_zero_prev_density, st + offset * e3).g;
     ifbound = texture2D(height_boundary, st + offset * e3).g; //down
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f1 = max(k_a * f1 + (1.0 - k_a) * f3 - isBoundary*evapRate, 0.);
+      if(k_a == 1) {
+        new_f1 = max(k_a * f1 + (1.0 - k_a) * f3 - isBoundary*evapRate, 0.);
+      }
+      else {
+        new_f1 = max(k_a * f1 + (1.0 - k_a) * f3, 0.);
+      }
     }
 
     k_opposite = texture2D(f_zero_prev_density, st + offset * e4).g;
     ifbound = texture2D(height_boundary, st + offset * e4).g; 
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f2 = max(k_a * f2 + (1.0 - k_a) * f4 - isBoundary*evapRate, 0.);
+      if (k_a == 1) {
+        new_f2 = max(k_a * f2 + (1.0 - k_a) * f4 - isBoundary*evapRate, 0.);
+      }
+      new_f2 = max(k_a * f2 + (1.0 - k_a) * f4, 0.);
     }
 
+    //FIX LATER
     k_opposite = texture2D(f_zero_prev_density, st + offset * e5).g;
     ifbound = texture2D(height_boundary, st + offset * e5).g;
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f7 = max(k_a * f2 + (1.0 - k_a) * f5 - isBoundary*evapRate, 0.);
+      if (k_a == 1) {
+        new_f7 = max(k_a * f2 + (1.0 - k_a) * f5 - isBoundary*evapRate, 0.);
+      }
+      new_f7 = max(k_a * f2 + (1.0 - k_a) * f5, 0.);
     }
 
     k_opposite = texture2D(f_zero_prev_density, st + offset * e6).g;
     ifbound = texture2D(height_boundary, st + offset * e6).g;
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f8 = max(k_a * f2 + (1.0 - k_a) * f6 - isBoundary*evapRate, 0.);
+      if (k_a == 1) {
+        new_f8 = max(k_a * f2 + (1.0 - k_a) * f6 - isBoundary*evapRate, 0.);
+      }
+      new_f8 = max(k_a * f2 + (1.0 - k_a) * f6, 0.);
     }
 
     k_opposite = texture2D(f_zero_prev_density, st + offset * e7).g;
     ifbound = texture2D(height_boundary, st + offset * e7).g;
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f5 = max(k_a * f2 + (1.0 - k_a) * f7 - isBoundary*evapRate, 0.);
+      if (k_a == 1) {
+        new_f5 = max(k_a * f2 + (1.0 - k_a) * f7 - isBoundary*evapRate, 0.);
+      }
+      new_f5 = max(k_a * f2 + (1.0 - k_a) * f7, 0.);
     }
 
     k_opposite = texture2D(f_zero_prev_density, st + offset * e8).g;
     ifbound = texture2D(height_boundary, st + offset * e8).g;
     if (ifbound) {
       k_a = 0.5 * current_blocking_factor + 0.5 * k_opposite;
-      float new_f6 = max(k_a * f2 + (1.0 - k_a) * f8 - isBoundary*evapRate, 0.);
+      if (k_a == 1) {
+        new_f6 = max(k_a * f2 + (1.0 - k_a) * f8 - isBoundary*evapRate, 0.);
+      }
+      new_f6 = max(k_a * f2 + (1.0 - k_a) * f8, 0.);
     }
 
     //also when touch boundary cells, density would change 
@@ -153,6 +227,7 @@ void main() {
   gl_FragData[2] = vec4(u.x, u.y, new_density, new_wf);
   //gl_FragData[2] = vec4(u.x, u.y, 1., .1);
   gl_FragData[3] = vec4(new_f0, texture2D(f_zero_prev_density, st).g, texture2D(f_zero_prev_density, st).b, ws);
+  gl_FragData[4] = vec4(tex.r,isBoundary, justStreamed, 0.);
     //new distribution function by swapping texture channels, mentioned on page 36 - 37 (pdf) 
   	//float new_f1 = texture2D(f_one_four, st + offset * e3).r;
     //float new_f2 = texture2D(f_one_four, st + offset * e4).g;

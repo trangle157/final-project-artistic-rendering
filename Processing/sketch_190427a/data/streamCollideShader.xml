@@ -1,7 +1,7 @@
 <filter name="Stream-Collide">
     <description>Updates fluid with collision and streaming</description>
 	<vertex>defaultvert.glsl</vertex>
-    <fragment>streamcollide.glsl</fragment>
+    <fragment>streamdisperse.glsl</fragment>
     <textures input="5" output="4">
         <intexture type="sampler2d" name="f_one_four" offset="offset" label="DF1to4">0</intexture>
         <intexture type="sampler2d" name="f_five_eight" offset="offset" label="DF5to8">1</intexture>

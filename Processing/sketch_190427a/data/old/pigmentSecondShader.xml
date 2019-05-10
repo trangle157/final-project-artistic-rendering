@@ -2,7 +2,7 @@
     <description>Updates pigment based on fluid flow</description>
 	<vertex>defaultvert.glsl</vertex>
     <fragment>pigment_other.glsl</fragment>
-    <textures input="6" output="1">
+    <textures input="6" output="2">
         <intexture type="sampler2d" name="pigment" offset="offset" label="pigment texture">0</intexture>
 		<intexture type="sampler2d" name="f_one_four" offset="offset" label="DF1to4">1</intexture>
         <intexture type="sampler2d" name="f_five_eight" offset="offset" label="DF5to8">2</intexture>

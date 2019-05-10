@@ -1,0 +1,11 @@
+<filter name="Color calculation">
+    <description>Calculates net color given pigment layers</description>
+	<vertex>defaultvert.glsl</vertex>
+    <fragment>color.glsl</fragment>
+    <textures input="2" output="1">
+        <intexture type="sampler2d" name="sum_reflectance" offset="offset" label="Cumulative reflectance">0</intexture>
+        <intexture type="sampler2d" name="pigment" offset="offset" label="Next pigment layer">1</intexture>
+    </textures>
+	<parameter type="vec3" name="K" label="K_r, K_g, K_b">1 1 1</parameter>
+	<parameter type="vec3" name="S" label="S_r, S_g, S_b">1 1 1</parameter>
+</filter>

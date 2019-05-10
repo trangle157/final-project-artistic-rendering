@@ -8,8 +8,8 @@ uniform sampler2D f_one_four;
 uniform sampler2D f_five_eight;
 uniform sampler2D velocity_current_density;
 uniform sampler2D f_zero_prev_density;
-uniform vec2 offset;
 uniform sampler2D height_boundary;
+uniform vec2 offset;
 
 float smoothstep(float edge0, float edge1, float x) {
   if(x < edge0){
@@ -246,7 +246,8 @@ else{
   float new_wf = clamp(ws, 0.0, max(1.0 - new_density, 0.0));
   new_density = new_density + new_wf;
 
-  float lambda = 0.3;
+
+  float lambda = 0.5;
   float alpha = smoothstep(0., lambda, new_density);
 
   float f0_eq = (4./9.)*(new_density + alpha*(3.*dot(e0, u) + 9. * pow(dot(e0,u),2.)/2. - 3. * dot(u, u)/2.)); //wi = 4/9
@@ -276,7 +277,6 @@ else{
   gl_FragData[0] = vec4(new_f1, new_f2, new_f3, new_f4);
   gl_FragData[1] = vec4(new_f5, new_f6, new_f7, new_f8);
   gl_FragData[2] = vec4(u.x, u.y, new_density, new_wf);
-  //gl_FragData[2] = vec4(u.x, u.y, 1., .1);
   gl_FragData[3] = vec4(new_f0, texture2D(f_zero_prev_density, st).g, texture2D(f_zero_prev_density, st).b, ws);
 
 }

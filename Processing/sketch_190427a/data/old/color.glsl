@@ -6,9 +6,8 @@ precision mediump int;
 
 uniform sampler2D sum_reflectance;
 uniform sampler2D pigment;
-uniform vec3 K;
 uniform vec3 S;
-
+uniform vec3 K;
 
 vec3 sinh(vec3 x){
  return (exp(x) - exp(-1.*x))/2.;
@@ -25,7 +24,6 @@ vec3 b = vec3(sqrt(pow(a.x, 2.) - 1.), sqrt(pow(a.y, 2.) - 1.), sqrt(pow(a.z, 2.
 vec2 st = gl_TexCoord[0].st;
 vec3 concentration = texture2D(pigment, st).xyz;
 float thickness = (concentration.x + concentration.y + concentration.z) ;
-//float thickness = 1;
 if ( thickness > 0.){
 vec3 c = a * sinh(b * S * thickness) + b * cosh(b * S * thickness);
 vec3 R1 = sinh(b * S * thickness)/ c;

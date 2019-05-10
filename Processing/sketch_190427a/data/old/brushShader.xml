@@ -1,0 +1,14 @@
+<filter name="Brush application">
+    <description>Adds pigment based on where the brush is</description>
+	<vertex>defaultvert.glsl</vertex>
+    <fragment>brushfrag.glsl</fragment>
+    <textures input="4" output="4">
+        <intexture type="sampler2d" name="f_one_four" offset="offset" label="DF1to4">0</intexture>
+        <intexture type="sampler2d" name="f_five_eight" offset="offset" label="DF5to8">1</intexture>
+        <intexture type="sampler2d" name="f_zero_prev_density" offset="offset" label="DFblockpws">2</intexture>
+		<intexture type="sampler2d" name="pigment" offset="offset" label="pigment layer texture">3</intexture>
+    </textures>
+	<parameter type="float" name="brushSize" label="brush diameter">40</parameter>
+	<parameter type="vec2" name="brushVector" label="vector of brush direction">0 0</parameter>
+	<parameter type="vec2" name="brushPosition" label="Edges for particles motion">0 0</parameter>
+</filter>

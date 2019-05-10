@@ -15,9 +15,9 @@ uniform vec2 brushPosition;
 
 void main() {
   bool toBrush;
-  float scale_rest = 0.001; //set to something
-  float scale_direction = 0.005; //set to something
-  float pigment_to_water_ratio = 0.02;
+  float scale_rest = 1.; //set to something
+  float scale_direction =5.; //set to something
+  float pigment_to_water_ratio = 0.3;
   vec2 x_y = vec2(gl_TexCoord[0].s * 1080., gl_TexCoord[0].t * 900.);
   if (distance(vec2(x_y.x+0.5, x_y.y+0.5), brushPosition) >= brushSize / 2.0){
     toBrush = false;
@@ -43,8 +43,8 @@ void main() {
     gl_FragData[0] = vec4(f_one_to_four[0] + oneInc, f_one_to_four[1] + twoInc, f_one_to_four[2] + threeInc, f_one_to_four[3] + fourInc);
     gl_FragData[1] = vec4(f_five_to_eight[0] + fiveInc, f_five_to_eight[1] + sixInc,
       f_five_to_eight[2] + sevenInc, f_five_to_eight[3] + eightInc);
-    gl_FragData[2] = vec4(f_zero_.x + restInc, f_zero_.yz, f_zero_.w + 20. * pigment_to_water_ratio);
-    gl_FragData[3] = vec4(pigmentData.x + pigment_to_water_ratio, pigmentData.yzw);
+    gl_FragData[2] = vec4(f_zero_.x + restInc, f_zero_.yz, f_zero_.w + restInc* (1. - pigment_to_water_ratio));
+    gl_FragData[3] = vec4(pigmentData.x + restInc* pigment_to_water_ratio, pigmentData.yzw);
 
   } else{
     gl_FragData[0] = f_one_to_four;

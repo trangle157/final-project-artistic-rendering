@@ -4,7 +4,7 @@
     <fragment>pigment_Pf.glsl</fragment>
     <textures input="2" output="1">
         <intexture type="sampler2d" name="pigment" offset="offset" label="Pigment layer">0</intexture>
-        <intexture type="sampler2d" name="velocity_current_density" offset="offset" label="velocitypwfPP">1</intexture> 
+        <intexture type="sampler2d" name="f_zero_prev_density" offset="offset" label="DFblockpws">1</intexture> 
     </textures>
 	<!-- <parameter type="vec2" name="edges" label="Edges for particles motion">100 100</parameter> -->
 </filter>

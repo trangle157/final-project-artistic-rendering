@@ -1,0 +1,12 @@
+<filter name="Fluid update">
+    <description>Updates fluid with collision and streaming</description>
+    <fragment>updateShader.glsl</fragment>
+    <textures input="5" output="4">
+        <intexture type="sampler2d" name="tex0" offset="offset" label="DF1to4">0</intexture>
+        <intexture type="sampler2d" name="tex1" offset="offset" label="DF5to8">1</intexture>
+        <intexture type="sampler2d" name="tex2" offset="offset" label="velocitypwf">2</intexture>
+        <intexture type="sampler2d" name="tex3" offset="offset" label="DFblockpws">3</intexture>
+		<intexture type="sampler2d" name="tex4" offset="offset" label="h">4</intexture>		
+    </textures>
+	<!-- <parameter type="vec2" name="edges" label="Edges for particles motion">100 100</parameter> -->
+</filter>

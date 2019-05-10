@@ -67,8 +67,8 @@ void main(){
      else{ //fluid-boundary
          new_f1 = f3;
     }
-    if(k_a == 1.0){
-        new_f1 = max(new_f1 - isBoundary * evapRate, 0.);
+     if(k_a == 1.0){
+    new_f1 = max(new_f1 - isBoundary * evapRate, 0.);
     }
      float k_2 = texture2D(f_zero_prev_density, st - offset * e2).g;
      if (k_2 < 255.0){ //fluid-fluid

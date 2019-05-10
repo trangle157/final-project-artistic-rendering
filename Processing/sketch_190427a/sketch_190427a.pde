@@ -37,7 +37,9 @@ GLTexture reflectanceB;
 GLTexturePingPong reflectancePP;
 GLTexture dryLayer;
 GLTexture[] streamCollideShaderReadTexs = new GLTexture[5];
+GLTexture[] streamdisperseReadTexs = new GLTexture[5];
 GLTexture[] streamCollideShaderWriteTexs = new GLTexture[4];
+GLTexture[] streamdisperseWriteTexs = new GLTexture[4];
 GLTexture[] boundaryShaderReadTexs = new GLTexture[5];
 GLTexture[] boundaryShaderWriteTexs = new GLTexture[2];
 GLTexture[] brushShaderReadTexs = new GLTexture[4];
@@ -142,6 +144,17 @@ void draw() {
   DFblockpwsPP.swap();
   heightboundaryPP.swap();
   
+  //streamCollideShaderReadTexs[0] = DF1to4PP.getReadTex();
+  //streamCollideShaderReadTexs[1] = DF5to8PP.getReadTex();
+  //streamCollideShaderReadTexs[2] = velocitypwfPP.getReadTex();
+  //streamCollideShaderReadTexs[3] = DFblockpwsPP.getReadTex();
+  //streamCollideShaderReadTexs[4] = heightboundaryPP.getReadTex();
+  //streamCollideShaderWriteTexs[0] = DF1to4PP.getWriteTex();
+  //streamCollideShaderWriteTexs[1] = DF5to8PP.getWriteTex();
+  //streamCollideShaderWriteTexs[2] = velocitypwfPP.getWriteTex();
+  //streamCollideShaderWriteTexs[3] = DFblockpwsPP.getWriteTex();
+  //streamCollideShader.apply(streamCollideShaderReadTexs, streamCollideShaderWriteTexs);
+
   streamCollideShaderReadTexs[0] = DF1to4PP.getReadTex();
   streamCollideShaderReadTexs[1] = DF5to8PP.getReadTex();
   streamCollideShaderReadTexs[2] = velocitypwfPP.getReadTex();
@@ -151,7 +164,9 @@ void draw() {
   streamCollideShaderWriteTexs[1] = DF5to8PP.getWriteTex();
   streamCollideShaderWriteTexs[2] = velocitypwfPP.getWriteTex();
   streamCollideShaderWriteTexs[3] = DFblockpwsPP.getWriteTex();
+  
   streamCollideShader.apply(streamCollideShaderReadTexs, streamCollideShaderWriteTexs);
+
   DF1to4PP.swap();
   DF5to8PP.swap();
   velocitypwfPP.swap();

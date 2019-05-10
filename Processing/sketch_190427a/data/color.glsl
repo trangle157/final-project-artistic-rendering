@@ -20,22 +20,24 @@ vec3 cosh(vec3 x){
 
 void main(){
 
-vec3 a = K/S + vec3(1.);
-vec3 b = vec3(sqrt(pow(a.x, 2.) - 1.), sqrt(pow(a.y, 2.) - 1.), sqrt(pow(a.z, 2.) - 1.));
-vec2 st = gl_TexCoord[0].st;
-vec3 concentration = texture2D(pigment, st).xyz;
-float thickness = (concentration.x + concentration.y + concentration.z) ;
-//float thickness = 1;
-if ( thickness > 0.){
-vec3 c = a * sinh(b * S * thickness) + b * cosh(b * S * thickness);
-vec3 R1 = sinh(b * S * thickness)/ c;
-vec3 T1 = b / c;
-vec3 R2 = texture2D(sum_reflectance, st).xyz;
-vec3 R = R1 + vec3(pow(T1.x, 2.), pow(T1.y, 2.), pow(T1.z, 2.)) * R2 / (vec3(1.) - R1 * R2);
+	vec3 a = K/S + vec3(1.);
+	vec3 b = vec3(sqrt(pow(a.x, 2.) - 1.), sqrt(pow(a.y, 2.) - 1.), sqrt(pow(a.z, 2.) - 1.));
+	vec2 st = gl_TexCoord[0].st;
+	vec3 concentration = texture2D(pigment, st).xyz;
+	float thickness = (concentration.x + concentration.y + concentration.z) ;
+	//float thickness = 1;
+	if ( thickness > 0.){
+		vec3 c = a * sinh(b * S * thickness) + b * cosh(b * S * thickness);
+		vec3 R1 = sinh(b * S * thickness)/ c;
+		vec3 T1 = b / c;
+		vec3 R2 = texture2D(sum_reflectance, st).xyz;
+		vec3 R = R1 + vec3(pow(T1.x, 2.), pow(T1.y, 2.), pow(T1.z, 2.)) * R2 / (vec3(1.) - R1 * R2);
 
-gl_FragData[0] = vec4(R, 255.);
-} else {
-vec3 R2 = texture2D(sum_reflectance, st).xyz;
-gl_FragData[0] = vec4(R2, 255.);
+		gl_FragData[0] = vec4(R, 255.);
+	} else {
+		vec3 R2 = texture2D(sum_reflectance, st).xyz;
+		gl_FragData[0] = vec4(R2, 255.);
+	}
 }
-}
+
+

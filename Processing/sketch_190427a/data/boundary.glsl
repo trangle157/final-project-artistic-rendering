@@ -24,20 +24,23 @@ void main(){
   vec4 tex2 = texture2D(f_zero_prev_density, st);
 	float ws = tex2.a;
   float wf = texture2D(velocity_current_density, st).a;
-  if(current_density == 0.0){
-    float density_1 = texture2D(velocity_current_density, st + vec2(+dx, 0.0)).b;
-    float density_2 = texture2D(velocity_current_density, st + vec2(-dx, 0.0)).b;
-    float density_3 = texture2D(velocity_current_density, st + vec2(0.0, +dy)).b;
-    float density_4 = texture2D(velocity_current_density, st + vec2(0.0, -dy)).b;
-    float density_5 = texture2D(velocity_current_density, st + vec2(+dx, +dy)).b;
-    float density_6 = texture2D(velocity_current_density, st + vec2(+dx, -dy)).b;
-    float density_7 = texture2D(velocity_current_density, st + vec2(-dx, +dy)).b;
-    float density_8 = texture2D(velocity_current_density, st + vec2(-dx, -dy)).b;
-    if(density_1 < threshold && density_2 < threshold && density_3 < threshold && density_4 < threshold &&
-      density_5 < threshold && density_6 < threshold && density_7 < threshold && density_8 < threshold ){
-        new_blocking_factor = 255.;
-        isBoundary = 1.0;
-      }
+
+  float density_1 = texture2D(velocity_current_density, st + vec2(+dx, 0.0)).b;
+  float density_2 = texture2D(velocity_current_density, st + vec2(-dx, 0.0)).b;
+  float density_3 = texture2D(velocity_current_density, st + vec2(0.0, +dy)).b;
+  float density_4 = texture2D(velocity_current_density, st + vec2(0.0, -dy)).b;
+  float density_5 = texture2D(velocity_current_density, st + vec2(+dx, +dy)).b;
+  float density_6 = texture2D(velocity_current_density, st + vec2(+dx, -dy)).b;
+  float density_7 = texture2D(velocity_current_density, st + vec2(-dx, +dy)).b;
+  float density_8 = texture2D(velocity_current_density, st + vec2(-dx, -dy)).b;
+
+  //if current cell has density > threshold
+  if(current_density > threshold){
+    //if surrounding cells is dry --> current cell is boundary cell
+    if (density_1 == 0 || density_2 == 0 || density_3 == 0 || density_4 == 0 || density_5 == 0 || density_6 == 0 || density_7 == 0 || density_8 == 0) {
+      isBoundary = 1.0;
+      new_blocking_factor = 10000000;
+    }
   }
   float new_ws = max(ws-wf, 0.0);
   gl_FragData[0] = vec4(tex2.r, new_blocking_factor, tex2.b, new_ws);

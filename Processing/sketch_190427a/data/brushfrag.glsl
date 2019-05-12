@@ -12,14 +12,26 @@ uniform float brushSize;
 uniform vec2 brushVector;
 uniform vec2 brushPosition;
 
+float min_dist(vec2 v, vec2 w, vec2 p) {
+  float l = distance(v, w);
+  float l2 = l * l;  
+  // We clamp t from [0,1] to handle points outside the segment vw.
+  //float tail = -1.5 / l - .05;
+  float tail = 0.0;
+  float t = clamp(dot(p - v, w - v) / l2, tail, 1.0);
+  vec2 projection = v + t * (w - v);  // Projection falls on the segment
+  return distance(p, projection);
+}
 
 void main() {
   bool toBrush;
-  float scale_rest = 0.001; //set to something
-  float scale_direction = 0.005; //set to something
-  float pigment_to_water_ratio = 0.02;
+  float scale_rest = .1; //set to something
+  float scale_direction = .05; //set to something
+  float pigment_to_water_ratio = 0.1;
+  float minf = .040;  //.01
   vec2 x_y = vec2(gl_TexCoord[0].s * 1080., gl_TexCoord[0].t * 900.);
-  if (distance(vec2(x_y.x+0.5, x_y.y+0.5), brushPosition) >= brushSize / 2.0){
+  float dist = min_dist(brushPosition - brushVector, brushPosition, x_y);
+  if (dist > brushSize / 2.0){
     toBrush = false;
   }else{
     toBrush = true;
@@ -29,23 +41,26 @@ void main() {
   vec4 f_five_to_eight = texture2D(f_five_eight, st);
   vec4 f_zero_ = texture2D(f_zero_prev_density, st);
   vec4 pigmentData = texture2D(pigment, st);
+  
   if(toBrush){
+  vec2 scaledvector = brushVector / length(brushVector) * scale_direction;
+    pigment_to_water_ratio = max(0.0, pigment_to_water_ratio - .0003 * pow(1.13, dist));
     float restInc = scale_rest;
-    float oneInc = scale_direction * brushVector.x;
-    float twoInc = scale_direction * brushVector.y;
-    float threeInc = -oneInc;
-    float fourInc = - twoInc;
-    float fiveInc = scale_direction *(brushVector.x + brushVector.y) / sqrt(2.0);
-    float sixInc = scale_direction * (brushVector.y - brushVector.x) / sqrt(2.0);
-    float sevenInc = - fiveInc;
-    float eightInc = -sevenInc;
-
-    gl_FragData[0] = vec4(f_one_to_four[0] + oneInc, f_one_to_four[1] + twoInc, f_one_to_four[2] + threeInc, f_one_to_four[3] + fourInc);
-    gl_FragData[1] = vec4(f_five_to_eight[0] + fiveInc, f_five_to_eight[1] + sixInc,
-      f_five_to_eight[2] + sevenInc, f_five_to_eight[3] + eightInc);
-    gl_FragData[2] = vec4(f_zero_.x + restInc, f_zero_.yz, f_zero_.w + 20. * pigment_to_water_ratio);
-    gl_FragData[3] = vec4(pigmentData.x + pigment_to_water_ratio, pigmentData.yzw);
-
+    float oneInc = max(minf, scaledvector.x);
+    float twoInc = max(minf, scaledvector.y);
+    float threeInc = max(minf, - scaledvector.x);
+    float fourInc =  max(minf, - scaledvector.y);
+    float fiveInc = max(scaledvector.x + scaledvector.y, minf) / sqrt(2.0);
+    float sixInc = max(- scaledvector.x + scaledvector.y, minf) / sqrt(2.0);
+    float sevenInc =  max(- scaledvector.x + - scaledvector.y, minf) / sqrt(2.0);
+    float eightInc = max(scaledvector.x + - scaledvector.y, minf) / sqrt(2.0);
+    float retain = .90;
+    gl_FragData[0] = vec4(retain * f_one_to_four.x + oneInc, retain * f_one_to_four.y + twoInc,retain *  f_one_to_four.z + threeInc,
+	  retain * f_one_to_four.w + fourInc);
+    gl_FragData[1] = vec4(retain * f_five_to_eight.x + fiveInc, retain * f_five_to_eight.y + sixInc,
+      retain * f_five_to_eight.z + sevenInc, retain * f_five_to_eight.w + eightInc);
+    gl_FragData[2] = vec4(retain * f_zero_.x + restInc, f_zero_.y, f_zero_.z, .66 * f_zero_.w + 5. * pigment_to_water_ratio);
+    gl_FragData[3] = vec4(.66 * pigmentData.x + pigment_to_water_ratio, pigmentData.y, pigmentData.z, 0.0);
   } else{
     gl_FragData[0] = f_one_to_four;
     gl_FragData[1] = f_five_to_eight;
@@ -53,3 +68,5 @@ void main() {
     gl_FragData[3] = pigmentData;
   }
 }
+
+

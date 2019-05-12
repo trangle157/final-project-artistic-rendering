@@ -2,7 +2,7 @@ import processing.opengl.*;
 import codeanticode.glgraphics.*;
 
 
-float brushSize = 40;
+float brushSize = 50;
 float[][] colorinfo = {{.22, 1.47, .57, .05, .003, .03, .02, 5.5, .81}, 
                    {.46, 1.07, 1.5, 1.28, .38, .21, .05, 7, .4},
                    {.1, .36, 3.45, .97, .65, .007, .05, 3.4, .81},
@@ -38,8 +38,6 @@ GLTexturePingPong reflectancePP;
 GLTexture dryLayer;
 GLTexture[] streamCollideShaderReadTexs = new GLTexture[5];
 GLTexture[] streamCollideShaderWriteTexs = new GLTexture[4];
-GLTexture[] collisionShaderReadTexs = new GLTexture[5];
-GLTexture[] collisionShaderWriteTexs = new GLTexture[4];
 GLTexture[] boundaryShaderReadTexs = new GLTexture[5];
 GLTexture[] boundaryShaderWriteTexs = new GLTexture[2];
 GLTexture[] brushShaderReadTexs = new GLTexture[4];
@@ -48,7 +46,6 @@ GLTexture[] pigmentSecondShaderReadTexs = new GLTexture[6];
 ArrayList<GLTexturePingPong> pigmentsPPs;
 ArrayList<Integer> pigmentsSet;
 GLTextureFilter streamCollideShader;
-GLTextureFilter collisionShader;
 GLTextureFilter boundaryShader;
 GLTextureFilter brushShader;
 GLTextureFilter colorShader;
@@ -69,7 +66,6 @@ void setup() {
   pigmentsPPs = new ArrayList<GLTexturePingPong>();
   pigmentsSet = new ArrayList<Integer>();
   streamCollideShader = new GLTextureFilter(this, "streamCollideShader.xml");
-  collisionShader = new GLTextureFilter(this, "collisionShader.xml");
   boundaryShader = new GLTextureFilter(this, "boundaryShader.xml");
   brushShader = new GLTextureFilter(this, "brushShader.xml");
   colorShader = new GLTextureFilter(this, "colorShader.xml");
@@ -129,7 +125,8 @@ void setup() {
 void draw() {
   
   //rect(0,0,1080,900);
-  if (mousePressed) {
+  if (mousePressed && (mouseX != pmouseX || mouseY != pmouseY)) {
+  //if (mousePressed) {
     if (mouseX < 1110){
       applyBrush();
     }
@@ -160,24 +157,14 @@ void draw() {
   DF5to8PP.swap();
   velocitypwfPP.swap();
   DFblockpwsPP.swap();
-
-  collisionShaderReadTexs[0] = DF1to4PP.getReadTex();
-  collisionShaderReadTexs[1] = DF5to8PP.getReadTex();
-  collisionShaderReadTexs[2] = velocitypwfPP.getReadTex();
-  collisionShaderReadTexs[3] = DFblockpwsPP.getReadTex();
-  collisionShaderReadTexs[4] = heightboundaryPP.getReadTex();
-  collisionShaderWriteTexs[0] = DF1to4PP.getWriteTex();
-  collisionShaderWriteTexs[1] = DF5to8PP.getWriteTex();
-  collisionShaderWriteTexs[2] = velocitypwfPP.getWriteTex();
-  collisionShaderWriteTexs[3] = DFblockpwsPP.getWriteTex();
-  collisionShader.apply(streamCollideShaderReadTexs, streamCollideShaderWriteTexs);
-  DF1to4PP.swap();
-  DF5to8PP.swap();
+  
+  
   
   for (int i = 0; i < pigmentsPPs.size(); i++) {
-    pigmentFirstShader.apply(new GLTexture[] {pigmentsPPs.get(i).getReadTex(), velocitypwfPP.getReadTex()}, new GLTexture[] {pigmentsPPs.get(i).getWriteTex()});
+    pigmentFirstShader.apply(new GLTexture[] {pigmentsPPs.get(i).getReadTex(), velocitypwfPP.getReadTex(), DFblockpwsPP.getReadTex()}, new GLTexture[] {pigmentsPPs.get(i).getWriteTex()});
     pigmentsPPs.get(i).swap();
   }
+  
   
   for (int i = 0; i < pigmentsPPs.size(); i++) {
     pigmentSecondShaderReadTexs[0] = pigmentsPPs.get(i).getReadTex();
@@ -217,11 +204,11 @@ void draw() {
       DFblockpwsPP.getReadTex().setZero();
     }
     image(reflectancePP.getReadTex(), 0, 0, 1080, 900);
-    println("reflectance");
+    //println("reflectance");
   }
   else {
     image(dryLayer, 0, 0, 1080, 900);
-    println("drylayer");
+    //println("drylayer");
   }
   dryCanvas = false;
   //println(mouseX + "  " + mouseY);
@@ -238,7 +225,7 @@ void mousePressed() {
       brushSize = max(10, brushSize - 10);
   }
   else if(mouseX >= 1110 && mouseX <= 1250 && mouseY > 760 && mouseY < 790){
-      brushSize = min(80, brushSize + 10);
+      brushSize = min(110, brushSize + 10);
   }
   else if(mouseX >= 1155 && mouseY > 870) {
       dryCanvas = true;
@@ -251,8 +238,8 @@ void applyBrush() {
       //make new pigment layer
       pigmentsSet.add(colorSelection);
       pigmentToModify = new GLTexturePingPong(new GLTexture(this, 1080, 900, texParams), new GLTexture(this, 1080, 900, texParams));
-      pigmentToModify.getReadTex().setZero();
-      pigmentToModify.getWriteTex().setZero();
+      pigmentToModify.getReadTex().clear(0., 0., 0., 0.);
+      pigmentToModify.getWriteTex().clear(0., 0., 0., 0.);
       pigmentsPPs.add(pigmentToModify);
     }
     else {

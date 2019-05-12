@@ -17,35 +17,66 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link active" href="proposal.html">Proposal<span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" href="#">Final Report</a>
-      <a class="nav-item nav-link" href="#">Reference</a>
+      <a class="nav-item nav-link" href="#">Milestone<span class="active"></span></a>
+      <a class="nav-item nav-link" href="#">Final Report<span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="#">Reference<span class="sr-only">(current)</span></a>
     </div>
   </div>
   Richard Chen, Dahyun Kim and Trang Le
 </div>
 <head>
+<link href="https://fonts.googleapis.com/css?family=Heebo:300|Noto+Sans+JP:100" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   div.padded {
      padding-top: 0px;  
-     padding-right: 250px;  
+     padding-right: 570px;  
      padding-bottom: 0.25in;  
-     padding-left: 250px;  
+     padding-left: 570px; 
+     line-height: 3; 
   }
 body, html {
   height: 100%;
   margin: 0;
-  font-family: Helvetica, sans-serif;
 }
 
 .hero-image {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("https://static1.squarespace.com/static/568b298857eb8d622b8040e9/5984c73c9f745676d8b58c07/5aa83ddd71c10b9167246dfd/1520975462123/Peonies+watercolor+%C2%A9Scratchmade.jpg?format=1000w");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)), url("https://i.ibb.co/GWg1TTh/web-banner-2.png");
   height: 50%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
 }
+
+h1.font1 {
+  font-weight: 300;
+  font-size-adjust: 900%;
+  font-family: Lora;
+  opacity: 0.8;
+}
+
+
+h1.title {
+  font-weight: 100;
+  font-family: 'Noto Sans JP', sans-serif;
+  opacity: 1.0;
+  color: #efb8e4;
+}
+
+p.font_title {
+  font-weight: 100;
+  font-family: Lora;
+  opacity: 0.5;
+}
+
+p.body {
+  font-weight: 100;
+  font-family: 'Noto Sans JP', sans-serif;
+  opacity: 1.0;
+
+}
+
 
 .hero-text {
   text-align: center;
@@ -54,6 +85,7 @@ body, html {
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
+  font-weight: 400;
 }
 
 .hero-text button {
@@ -77,17 +109,16 @@ body, html {
 
 <div class="hero-image">
   <div class="hero-text">
-    <h1 style="font-size:50px">CS 184 project</h1>
-    <p><font size="+3">Artistic rendering</font></p>
+    <h1 style="font-size:80px" class="font1">CS 184 project</h1>
+    <p class="font_title"><font size="+40">Artistic rendering</font></p>
   </div>
 </div>
 
-<p>hello</p>
 <p>
-<h1 align="middle">Milestone Status Report</h1>
+<h1 align="middle" class="title" style="color: #8c7877;">Milestone Status Report</h1>
 
-<div class="padded">
-<p>
+<div class="padded" style="font-family: 'Times'; color: #111111;">
+<p class="body">
 1) What we have done so far:
 
 We managed to research into computer simulated watercolor and found a reliable method (Lattice Boltzmann Method) to adopt. (O'Brien, Patrick Michael (2008). A framework for digital watercolor. Master's thesis, Texas A&M University. Texas A&M University.)
@@ -95,7 +126,7 @@ We managed to research into computer simulated watercolor and found a reliable m
 We structured our project into two main parts: GUI and OpenGL shaders. We will implement most of the computation needed into separate OpenGL shaders and call those shaders in a main program ran by Processing to produce our GUI interface. Under this structure, we managed to build a very simple drawing software along with a simple shader to model the brush strokes. We also have some of the pieces in place to create the full framework for managing, updating, and rendering the texture data in Processing
 
 </p>
-<p>
+<p class="body">
 2) The preliminary results:
 
 So far, we’ve managed to build a simple drawing software using Processing’s built-in shaders. A shader program to model the brush strokes were also written in GLSL. The results can be found here: <a href="https://drive.google.com/file/d/1zUCA4LXGdteGTJgQiTU7WZngDHqTZn5A/view?usp=sharing">video link</a>,
@@ -103,13 +134,13 @@ So far, we’ve managed to build a simple drawing software using Processing’s 
 <a href="https://docs.google.com/presentation/d/1-tjZlfl8-j7sCoRr_zv6MiKPeWxedS6GFDs3docQqgg/edit#slide=id.p">slides link</a>
 
 </p>
-<p>
+<p class="body">
 3) Accordance to Plan:
 
 In our original proposal, we structured our project into implementing different pigments (watercolor, paint, etc..). However, we received feedback from the TA’s noting that multiple pigments would probably be out of the time scope for this project. We then changed our project structure into implementing only watercolor instead of multiple pigments. Additionally, we will not be simulating multiple materials to be drawn on and will just use a paper-like canvas. 
 
 </p>
-<p>
+<p class="body">
 4) Updated Plan:
 
 To efficiently implement computer simulated watercolor, we made plans to separate our computation load into different shaders. Once we have all the equations built into the shader programs, we plan to write a main program in Processing to call the shaders to produce a canvas-like GUI. Doing so, our plans naturally fell into implementing 1~2 shaders per week, along with building the main program as we go. So far, we are slightly behind schedule in that we only managed to implement one shader program (the brush shader), and we have 3 more shaders to go (general update, pigment layer update, net color calculation). 

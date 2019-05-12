@@ -101,7 +101,7 @@ void setup() {
   DFblockpwsA.setZero();
   DFblockpwsB.setZero();
   DFblockpwsPP = new GLTexturePingPong(DFblockpwsA, DFblockpwsB);
-  canvas = new GLTexture(this, "paper.png");
+  canvas = new GLTexture(this, "paper_white.jpg");
   heightboundaryA = new GLTexture(this, 1080, 900, texParams);
   heightboundaryB = new GLTexture(this, 1080, 900, texParams);
   heightboundaryA.setZero();

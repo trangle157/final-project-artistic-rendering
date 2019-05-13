@@ -17,10 +17,10 @@ void main(){
   float dx = offset.s;
   float dy = offset.t;
   float current_density = texture2D(velocity_current_density, st).b;
-  float threshold = 1.0;
+  float threshold = 1.2;
   float root2threshold = threshold * sqrt(2.);
   vec4 tex = texture2D(height_boundary, st);
-  float new_blocking_factor = max(0.0, tex.r / 100 - 0.);
+  float new_blocking_factor = max(0.0, tex.r / 60 - 0.);
   float isPinned = 0.0;
   vec4 tex2 = texture2D(f_zero_prev_density, st);
   float wf = texture2D(velocity_current_density, st).a;

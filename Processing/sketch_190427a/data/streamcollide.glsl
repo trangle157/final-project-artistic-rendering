@@ -47,7 +47,7 @@ void main(){
 
   float current_blocking_factor = texture2D(f_zero_prev_density, st).g;
   float isBoundary = texture2D(height_boundary, st).g;
-  float evapRate = 0.00005;
+  float evapRate = 0.007;
   float k_a = 0.;
   float new_f1 = f1;
   float new_f2= f2;
@@ -145,7 +145,7 @@ void main(){
   vec2 u = e1 * new_f1 + e2 * new_f2 + e3 * new_f3 + e4 * new_f4 + e5 * new_f5 + e6 * new_f6 + e7 * new_f7 + e8 * new_f8;
   float new_density = f0 + new_f1 + new_f2 + new_f3 + new_f4 + new_f5 + new_f6 + new_f7 + new_f8;
   //float es = 0.001;
-  float es = 0.005;
+  float es = 0.007;
   new_density = max(new_density - es, 0.);
   float beta = 1.0; //max amount of water
   float new_wf = clamp(ws, 0.0, max(beta - new_density, 0.0));
@@ -165,7 +165,7 @@ void main(){
   float f8_eq = (1./36.)*(new_density + alpha*(3.*dot(e8,u) + 9. * pow(dot(e8,u),2.)/2. - 3. * dot(u, u)/2.));
 
   //update new distribution function
-  float viscosity = .0300; //.03
+  float viscosity = .00700; //.03
   float new_f0 = (1. - viscosity) * f0 + viscosity * f0_eq;
   new_f1 = (1.-viscosity)*new_f1 + viscosity*f1_eq;
   new_f2 = (1.-viscosity)*new_f2 + viscosity*f2_eq;

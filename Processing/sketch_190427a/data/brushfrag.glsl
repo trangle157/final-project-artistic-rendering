@@ -26,8 +26,8 @@ float min_dist(vec2 v, vec2 w, vec2 p) {
 void main() {
   bool toBrush;
   float scale_rest = .1; //set to something
-  float scale_direction = .023; //set to something
-  float pigment_to_water_ratio = 0.03;
+  float scale_direction = .030; //set to something
+  float pigment_to_water_ratio = 0.05;
   float minf = .085;
   float maxf = .22;
   vec2 x_y = vec2(gl_TexCoord[0].s * 1080., gl_TexCoord[0].t * 900.);
@@ -60,7 +60,7 @@ void main() {
 	  retain * f_one_to_four.w + fourInc);
     gl_FragData[1] = vec4(retain * f_five_to_eight.x + fiveInc, retain * f_five_to_eight.y + sixInc,
       retain * f_five_to_eight.z + sevenInc, retain * f_five_to_eight.w + eightInc);
-    gl_FragData[2] = vec4(retain * f_zero_.x + restInc, f_zero_.y, f_zero_.z, .5 * f_zero_.w + 5. * pigment_to_water_ratio);
+    gl_FragData[2] = vec4(retain * f_zero_.x + restInc, f_zero_.y, f_zero_.z, .95 * f_zero_.w + 5. * pigment_to_water_ratio);
     gl_FragData[3] = vec4(.5 * pigmentData.x + pigment_to_water_ratio, pigmentData.y, pigmentData.z, 0.0);
   } else{
     gl_FragData[0] = f_one_to_four;

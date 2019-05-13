@@ -68,9 +68,31 @@ void main(){
     float new_P_x = pigment_concentration.z;
     float current_density = velocity_density.z;
 
-    if (f0_prev_density.z > 0. || true){
-		if (texture2D(height_boundary, st - offset * velocity_density.xy ).y == 0.0) {
-		  new_P_f = texture2D(pigment, st - offset * velocity_density.xy ).y;
+    if (f0_prev_density.z > 0.){
+	    float x = velocity_density.x;
+		float y = velocity_density.y;
+		float atan2 = atan(y, x) / 3.1415926535897932384626433832795 * 180.;
+		float boost = 0.0;
+		if (atan2 > 32.5 && atan2 < 57.5) {
+		  x = (x + boost);
+		  y = (y - boost);
+		}
+		if (atan2 > 122.5 && atan2 < 147.5) {
+		  x = (x - boost); 
+		  y = (y - boost);
+		}
+		if (atan2 > 212.5 && atan2 < 237.5) {
+		  x = (x - boost);
+		  y = (y + boost);
+		}
+		if (atan2 > 302.5 && atan2 < 327.5) {
+		  x = (x + boost);
+		  y = (y + boost);
+		}
+		
+		
+		if (texture2D(height_boundary, st - offset * vec2(x, y)).y == 0.0) {
+		  new_P_f = texture2D(pigment, st - offset * vec2(x, y)).y;
 		}
     } else {
 	  if(f0_prev_density.z == 0.0 && current_density > 0.0) {
@@ -84,14 +106,6 @@ void main(){
         vec3 pigment_6 = texture2D(pigment, st - offset * e6).xyz;
         vec3 pigment_7 = texture2D(pigment, st - offset * e7).xyz;
         vec3 pigment_8 = texture2D(pigment, st - offset * e8).xyz;
-	    pigment_1 = min(pigment_1, 9.8);
-	    pigment_2 = min(pigment_2, 9.8);
-	    pigment_3 = min(pigment_3, 9.8);
-	    pigment_4 = min(pigment_4, 9.8);
-	    pigment_5 = min(pigment_5, 9.8);
-	    pigment_6 = min(pigment_6, 9.8);
-	    pigment_7 = min(pigment_7, 9.8);
-	    pigment_8 = min(pigment_8, 9.8);
         new_P_f = (f1 * pigment_1.y + f2 * pigment_2.y + f3 * pigment_3.y + f4 * pigment_4.y + f5 * pigment_5.y +
             f6 * pigment_6.y + f7 * pigment_7.y + f8 * pigment_8.y) / current_density;
       }
@@ -105,27 +119,27 @@ void main(){
        water_lost = 0.;
     }
     float zeta = .5;
-    float phi = 0.00075;
+    float phi = 0.0030; //.00075 //.001
     float P_fix = max(water_lost * (1.0 - smoothstep(0., zeta, velocity_density.z)), phi);
 	float maxpercentdeposit = .001;
     //float ki = 0.004;
-	float ki = 0.0020; //.0018
+	float ki = 0.004; //.0018
     float mu = .50; //.49
-    float tau = 0.13; //.13
-    float theta = 0.4;
+    float tau = .27; //.13
+    float theta = 0.028; //.008
     float granularity = ki * (1. - smoothstep(0., mu, texture2D(height_boundary, st).x));
     
-	if ( length(velocity_density.xy) > tau){
+	if ( length(velocity_density.xy) > tau * .5){
 	  P_fix = clamp(P_fix, phi, new_P_f * maxpercentdeposit + phi);
 	  P_fix = min(P_fix, new_P_f);
-	  float backrun = theta * velocity_density.z * new_P_x;
-	  backrun = clamp(backrun, 0.0, new_P_x);
+	  float backrun = clamp(length(velocity_density.xy) / tau, 0.0, 1.0) * theta * velocity_density.z * new_P_x;
+	  backrun = clamp(backrun, 0.0, min(new_P_x, .15));
 	  new_P_f = new_P_f - P_fix + backrun;
 	  new_P_x = new_P_x + P_fix - backrun;
     }else{
 	  P_fix = max(P_fix, granularity);
 	  if (P_fix == granularity) {
-	    P_fix = clamp(P_fix, phi, new_P_f * maxpercentdeposit * 3000. + phi) * exp(- new_P_x * 0.);
+	    P_fix = clamp(P_fix, phi, new_P_f * maxpercentdeposit * 1000. + phi) * exp(- new_P_x * 0.);
 	  }
 	  else {
 	    P_fix = clamp(P_fix, phi, new_P_f * maxpercentdeposit * 2. + phi);

@@ -155,11 +155,14 @@ Although the main framework of the project is still relatively same as that of P
   Debugging was extremely tedious for this project. Not only are all the shaders interdependent, it is very hard to verify intermediate results as our only output is the rendered outcome of the entire pipeline. As a result, trying to pin down the cause of a bug involved lots of manual perturbation to try setting some values to constants, commenting out different blocks of code, writing simplified shaders with easily verifiable behavior to test the other shaders, etc. Essentially, it was one big game of guess and check. Furthermore, the compiler gave very vague error messages, so even syntax errors could take a few minutes to find and solve. Lastly, sometimes we would find out that a parameter was off by an order of magnitude or more the entire time, and once we fixed it, things would work but we would need to adjust nearly a dozen other parameters to complement the new value. Adjusting the parameters was especially challenging, as small changes to one of the parameters or the code could warrant hours of testing combinations of the other parameters.
 
   We learned that it is not always the case that some complicated method in a paper is correct or that it will produce the best visual results (especially when there are more than 5 hyper parameters involved). In fact, better results in computer graphics can sometimes be achieved by taking shortcuts behind the scenes rather than staying true to the mathematics.
+</p>
 
-  Results
+<h2 align="middle" class="title" style="color: #8c7877;">Results</h2>
+<p class="body">
+
   Here we showcase some of the results obtained from our application. Some of the notable characteristics of watercolor are shown, such as the way the colors mix, edge darkening, back-runs, and granulation.
 
-  We also link a <a href="https://www.youtube.com/watch?v=TA5YJuSghIc">video</a> that contains drawing demonstration using our application. 
+  We also link a <a href="https://youtu.be/ndpUzEhrcN0">video</a> that contains drawing demonstration using our application. 
   DISCLAIMER: The drawing in the video looks laggy due to connection latency (it was filmed using screen sharing). This is NOT what it usually looks like.
 
 </p>
@@ -168,19 +171,18 @@ Although the main framework of the project is still relatively same as that of P
 
 <p class="body">
 
-[1] N. Chu et. al, MoXi: Real-Time Ink Dispersion in Absorbent Paper http://visgraph.cse.ust.hk/MoXi/moxi.pdf
+[1] <a href="http://visgraph.cse.ust.hk/MoXi/moxi.pdf">N. Chu et. al, MoXi: Real-Time Ink Dispersion in Absorbent Paper</a> 
 
 </p>
 <p class="body">
-[2] P. Brien, A Framework for Digital Watercolor
-http://oaktrust.library.tamu.edu/bitstream/handle/1969.1/86068/OBrien.pdf?sequence=1
+[2] <a href="http://oaktrust.library.tamu.edu/bitstream/handle/1969.1/86068/OBrien.pdf?sequence=1">P. Brien, A Framework for Digital Watercolor</a>
 </p>
 <p class="body">
-[3] Processing, https://processing.org/
-</p>
+[3] <a href="https://processing.org/">Processing</p>
+
 <p class="body">
-[4] OpenGL Documentation,https://www.khronos.org/registry/OpenGL-Refpages/es1.1/xhtml/ 
-http://www.shaderific.com/glsl-functions/?fbclid=IwAR087r1iqHFfS1mUQ7EIOUFQqq163duexiVnkqVDEpOlYufVjk4iKd6vx3E
+[4] <a href="https://www.khronos.org/registry/OpenGL-Refpages/es1.1/xhtml/ 
+http://www.shaderific.com/glsl-functions/?fbclid=IwAR087r1iqHFfS1mUQ7EIOUFQqq163duexiVnkqVDEpOlYufVjk4iKd6vx3E"> OpenGL Documentation </a>
 
 </p>
 <h2 align="middle" class="title" style="color: #8c7877;">Contributions</h2>

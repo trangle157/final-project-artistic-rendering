@@ -77,6 +77,11 @@ p.body {
 
 }
 
+p.bodybold {
+  font-weight: 200;
+  font-family: 'Noto Sans JP', sans-serif;
+  opacity: 1.0;
+}
 
 .hero-text {
   text-align: center;
@@ -103,6 +108,11 @@ p.body {
   background-color: #555;
   color: white;
 }
+
+.bold {
+  font-weight: 900;
+}
+
 </style>
 </head>
 <body>
@@ -122,7 +132,13 @@ p.body {
 
 <p class="body">
 
-Our project is based on the framework set by “A Framework for Digital Watercolor” by P. Brien[2], where we divide the watercolor simulation into four parts: the brush, the fluid (water) simulation, the pigment flow (model of paper), and color calculation. The brush is implemented as a simple discrete sampling of a circle, in which the pixels covered by the circle receives pigment depending on how fast the brush is moving. The water simulation is handled by using the modified LBM equations given below[1]. The main difference to the original LBM’s stream & collide equation is the addition of partial bounce-back during streaming, even when no boundary cells are involved. This is done by introducing a blocking factor at each cell’s distribution functions, which then work to simulate the streaming step being “partially pushed back”. This is done to simulate back-runs and granulation that is characteristic to realistic watercolor movement. After the water flow has been simulated, we also have to simulate the actual pigment flow to achieve correct reflectance at different sites. We do this by modeling the paper as 3 layers: the surface layer, the flow layer, and the fixture later. The key idea is that the pigment will flow spatially across cells, as well as flow into different layers of the paper at each cell, dependent on the water distribution functions. After the pigment flow is handled, we calculate the reflectance of each cell using the Kubelka-Munk model. The KM model allows us to composite multiple layers of pigment (or color) in the same cell to create a realistic looking color for the overlapping watercolor. 
+Our project is based on the framework set by “A Framework for Digital Watercolor” by P. Brien[2], where we divide the watercolor simulation into four parts: the brush, the fluid (water) simulation, the pigment flow (model of paper), and color calculation. The brush is implemented as a simple discrete sampling of a circle, in which the pixels covered by the circle receives pigment depending on how fast the brush is moving. The water simulation is handled by using the modified LBM equations given below[1]. 
+</p>
+
+<img src="images/LBM.png"/><figcaption align="middle">The Lattice Boltzman Equation</figcaption>
+
+<p class="body">
+The main difference to the original LBM’s stream & collide equation is the addition of partial bounce-back during streaming, even when no boundary cells are involved. This is done by introducing a blocking factor at each cell’s distribution functions, which then work to simulate the streaming step being “partially pushed back”. This is done to simulate back-runs and granulation that is characteristic to realistic watercolor movement. After the water flow has been simulated, we also have to simulate the actual pigment flow to achieve correct reflectance at different sites. We do this by modeling the paper as 3 layers: the surface layer, the flow layer, and the fixture later. The key idea is that the pigment will flow spatially across cells, as well as flow into different layers of the paper at each cell, dependent on the water distribution functions. After the pigment flow is handled, we calculate the reflectance of each cell using the Kubelka-Munk model. The KM model allows us to composite multiple layers of pigment (or color) in the same cell to create a realistic looking color for the overlapping watercolor. 
 
 Although the main framework of the project is still relatively same as that of Patrick O’ Brien’s, the our methods in executing some of the four main steps in the algorithm differ substantially in some cases. The main reason for the differences was mostly due the insufficient explanations in our reference[2] or the ineffectiveness of the methods described. The details on the differences in some steps of the watercolor simulation is given in the next section.
 
@@ -143,7 +159,7 @@ Although the main framework of the project is still relatively same as that of P
   Results
   Here we showcase some of the results obtained from our application. Some of the notable characteristics of watercolor are shown, such as the way the colors mix, edge darkening, back-runs, and granulation.
 
-  We also link a video that contains drawing demonstration using our application. 
+  We also link a <a href="https://www.youtube.com/watch?v=TA5YJuSghIc">video</a> that contains drawing demonstration using our application. 
   DISCLAIMER: The drawing in the video looks laggy due to connection latency (it was filmed using screen sharing). This is NOT what it usually looks like.
 
 </p>
@@ -154,26 +170,33 @@ Although the main framework of the project is still relatively same as that of P
 
 [1] N. Chu et. al, MoXi: Real-Time Ink Dispersion in Absorbent Paper http://visgraph.cse.ust.hk/MoXi/moxi.pdf
 
+</p>
+<p class="body">
 [2] P. Brien, A Framework for Digital Watercolor
 http://oaktrust.library.tamu.edu/bitstream/handle/1969.1/86068/OBrien.pdf?sequence=1
-
+</p>
+<p class="body">
 [3] Processing, https://processing.org/
-
+</p>
+<p class="body">
 [4] OpenGL Documentation,https://www.khronos.org/registry/OpenGL-Refpages/es1.1/xhtml/ 
 http://www.shaderific.com/glsl-functions/?fbclid=IwAR087r1iqHFfS1mUQ7EIOUFQqq163duexiVnkqVDEpOlYufVjk4iKd6vx3E
 
 </p>
 <h2 align="middle" class="title" style="color: #8c7877;">Contributions</h2>
-<p class="body">
-<p class="body">
-<b>Richard Chen</b>: Wrote the GUI, handled the Processing framework to integrate the shaders, debugged the shaders, made significant changes to the shaders, extensive testing of parameters
+
+<p class="bodybold">
+<span class="bold">Richard Chen</span>: Wrote the GUI, handled the Processing framework to integrate the shaders, debugged the shaders, made significant changes to the shaders, extensive testing of parameters
 </p>
-<p class="body">
-Dahyun Kim: Built and debugged most of our initial versions of the OpenGL shaders (before the final tweaks). Written a fair amount of deliverables (Proposal, Milestone Webpage, Presentation, Final Write-up) 
+
+<p class="bodybold">
+<span class="bold">Dahyun Kim</span>: Built and debugged most of our initial versions of the OpenGL shaders (before the final tweaks). Written a fair amount of deliverables (Proposal, Milestone Webpage, Presentation, Final Write-up) 
 </p>
-<p class="body">
-Trang Le: Wrote the four operations of water simulation and output them into four initial shaders: streaming, velocity and density, boundary, and collision. Reference from different papers to compare different approaches. Finish the deliverable web page, video and art works for demo of the project. 
+
+<p class="bodybold">
+<span class="bold">Trang Le</span>: Wrote the four operations of water simulation and output them into four initial shaders: streaming, velocity and density, boundary, and collision. Reference from different papers to compare different approaches. Work on version control. Finish the deliverable web page, video and art works for demo of the project. 
 </p>
+
 </p>
 </div>
 

@@ -28,6 +28,13 @@
 <link href="https://fonts.googleapis.com/css?family=Heebo:300|Noto+Sans+JP:100" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+  .container {
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+
   div.padded {
      padding-top: 0px;  
      padding-right: 310px;  
@@ -115,9 +122,10 @@ p.body {
 </div>
 
 <p>
-<h1 align="middle" class="title" style="color: #8c7877;">Abstract</h1>
+<h1 align="middle" class="title" style="color: #8c7877;">Abstract</h1>>
+
 <div class="padded" style="font-family: 'Times'; color: #111111;">
 <p class="body">
 
 We built a Java-based application to simulate watercolor in real-time, using a GUI to offer a relatively good drawing experience with our app. We structured our project into two parts: the main program & GUI generator, and the per-GPU computation. The main program & GUI generator was written using Processing[3], a Java-based tool that lets you write high-level functions in the graphics pipeline such as the initialization part and the draw loop, and it generates a GUI for us. This saved us from having to implement our own GUI from scratch, which was not the main intent of this project. The per-GPU computation was written using GLSL to build OpenGL[4] shaders to perform heavy computations in the GPU. This coincided well with our actual algorithms because the method we based our computation on, the Lattice Boltzman Method (LBM),  was a cell-by-cell method by nature. This allowed us to easily implement our algorithm inside the OpenGL shaders as well as allow us to make modifications to the necessary parts of the algorithm when needed. In our latest version of the app, we ended up modifying many of our original shaders built for the LBM for increased stability as well as better visuals. 
-
+  <div class="container"><img src="./artistic_rendering.png"/></div>
